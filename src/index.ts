@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
-import express from "express";
-import  authenticateToken  from "./util/authenticateToken";
-
+import express, { NextFunction } from "express";
+import authenticateToken from "./util/authenticateToken";
 
 const compression = require("compression");
 const jwt = require("jsonwebtoken");
@@ -60,10 +59,18 @@ app.post(`/login`, async (req, res) => {
     });
 });
 
+app.post("/logout", function (req, res) {
+  res.json({ auth: false, token: null });
+});
+
+app.post(`/me`, authenticateToken, (req, res, next) => {
+  res.json( res.locals.current_user );
+});
+
 var users = require("./routes/users");
 app.use("/users", users);
 
-const server = app.listen(3000, () =>
+app.listen(3000, () =>
   console.log(`
 🚀 Server ready at: http://localhost:3000
 ⭐️ Check repo at: https://github.com/gmanno/paquidepi`)
