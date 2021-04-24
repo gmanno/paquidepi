@@ -1,3 +1,5 @@
+import { Response, Request, NextFunction } from "express";
+
 const jwt = require("jsonwebtoken");
 
 interface decodedUser {
@@ -9,9 +11,11 @@ interface decodedUser {
 }
 
 
-const authenticateToken = (req: any, res: any, next: any) => {
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.headers["authorization"].split(" ").slice(-1).pop();
+    const auth = req.headers["authorization"];
+    const token = auth!=null? auth.split(" ").slice(-1).pop() : false;
+
     if (!token)
       return res
         .status(401)
@@ -37,7 +41,7 @@ const authenticateToken = (req: any, res: any, next: any) => {
     return res.status(500).json({
       auth: false,
       message: "Failed to authenticate token.",
-      error: err,
+      error: "Failed to authenticate token.",
     });
   }
 };

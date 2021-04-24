@@ -3,6 +3,7 @@ import express, { NextFunction } from "express";
 import authenticateToken from "./util/authenticateToken";
 
 const compression = require("compression");
+const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
@@ -11,6 +12,8 @@ const salt = bcrypt.genSaltSync(saltRounds);
 
 const prisma = new PrismaClient();
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 app.use(compression());
 
@@ -46,32 +49,40 @@ app.post(`/login`, async (req, res) => {
               expiresIn: 6000, // expires in 5min
             });
             res.json({
+              result: true,
               message: "Login realizado com sucesso",
               token: { access_token },
             });
           } else {
-            res.status(401).json({ message: "Senha inválida" });
+            res.json({ error: "Senha inválida" });
           }
         })
         .catch(() => {
-          res.status(401).json({ message: "E-mail não cadastrado." });
+          res.json({ error: "E-mail não cadastrado." });
         });
     });
 });
 
 app.post("/logout", function (req, res) {
-  res.json({ auth: false, token: null });
+  res.json({ result: true, auth: false, token: null });
 });
 
 app.post(`/me`, authenticateToken, (req, res, next) => {
-  res.json( res.locals.current_user );
+  res.json({ user: res.locals.current_user });
+});
+
+app.get("/", (req, res) => {
+  res.json({
+    message: "Paquinepi API",
+  });
 });
 
 var users = require("./routes/users");
 app.use("/users", users);
 
-app.listen(3000, () =>
+app.listen(process.env.PORT, () =>
   console.log(`
-🚀 Server ready at: http://localhost:3000
+🚀 Server ready at port ${process.env.PORT}
+ db env ${process.env.DATABASE_URL}
 ⭐️ Check repo at: https://github.com/gmanno/paquidepi`)
 );
