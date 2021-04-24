@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import authenticateToken from "../util/authenticateToken";
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
