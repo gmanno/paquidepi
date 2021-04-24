@@ -21,8 +21,8 @@ phases:
 # ExpressJS apps will need other artifact directories included (bin/*, public/*, routes/*, views/* etc).
 artifacts:
   files:
-    - src/*
-    - prima/*
-    - dist/*
+    - src/**/* 
+    - prima/**/* 
+    - dist/**/*
     - package.json
     - tsconfig.json
