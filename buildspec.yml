@@ -6,6 +6,7 @@ phases:
     commands:
       - echo Installing source NPM dependencies...
       - npm install
+      - npm install node-gyp
   build:
     commands:
       - echo Build started on `date`
