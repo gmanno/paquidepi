@@ -1,13 +1,14 @@
 {
   "name": "paquinepi",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "API express + prisma",
   "main": "src/index.ts",
   "author": "Germano Carvalho",
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "start": "ts-node dist/app.js",
+    "start": "nodemon src/app.ts",
+    "prod": "ts-node dist/app.js",
     "build": "tsc -p ."
   },
   "devDependencies": {
