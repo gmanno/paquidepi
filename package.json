@@ -5,6 +5,9 @@
   "main": "src/index.ts",
   "author": "Germano Carvalho",
   "license": "MIT",
+  "engines": {
+    "node": "latest"
+  },
   "scripts": {
     "dev": "nodemon src/app.ts",
     "start": "ts-node dist/app.js",
