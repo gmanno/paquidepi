@@ -10,11 +10,11 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Compiling the dist folder
-      - npx prisma db pull
       - npm run-script build
   post_build:
     commands:
       - echo Build completed on `date`
+      - npx prisma db pull
 
 # Include only the files required for your application to run.
 # Do not use recursively include artifacts from node_modules directory as it will include unnecessary packages 
