@@ -23,7 +23,7 @@ phases:
 artifacts:
   files:
     - src/**/* 
-    - prima/**/* 
+    - prisma/**/* 
     - dist/**/*
     - package.json
     - tsconfig.json
