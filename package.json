@@ -6,7 +6,7 @@
   "author": "Germano Carvalho",
   "license": "MIT",
   "engines": {
-    "node": "latest"
+    "node": "14.16.0"
   },
   "scripts": {
     "dev": "nodemon src/app.ts",
