@@ -5,17 +5,19 @@ phases:
   pre_build:
     commands:
       - echo Installing source NPM dependencies...
-      - npm install
+      
   build:
     commands:
       - echo Build started on `date`
       - echo Compiling the dist folder
+      - npm install
       - npx prisma generate
       - npx prisma db pull
       - npm run-script build
   post_build:
     commands:
       - echo Build completed on `date`
+      - npm run-script start
 
 # Include only the files required for your application to run.
 # Do not use recursively include artifacts from node_modules directory as it will include unnecessary packages 
