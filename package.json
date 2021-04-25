@@ -1,6 +1,6 @@
 {
   "name": "paquinepi",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "API express + prisma",
   "main": "src/index.ts",
   "author": "Germano Carvalho",
