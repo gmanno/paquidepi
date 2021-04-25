@@ -11,6 +11,7 @@ phases:
     commands:
       - echo Build started on `date`
       - echo Compiling the dist folder
+      - npx prisma migrate dev --name init
       - npm run-script build
   post_build:
     commands:
