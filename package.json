@@ -8,7 +8,7 @@
   
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "start": "pm2-runtime dist/app.js",
+    "start": "ts-node src/app.ts",
     "build": "tsc -p ."
   },
   "devDependencies": {
