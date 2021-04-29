@@ -15,6 +15,50 @@ model User {
   email     String   @unique
   name      String?
   password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model Client {
+  id        String    @id @default(uuid())
+  name      String
+  email     String?   @db.VarChar(120)
+  cpf       String    @db.VarChar(15)
+  phone     String    @db.VarChar(20)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  vehicles  Vehicle[]
+}
+
+model Vehicle {
+  id         String   @id @default(uuid())
+  license    String   @db.VarChar(20)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  owner      Client   @relation(fields: [clientId], references: [id])
+  clientId   String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  name     String    @db.VarChar(20)
+  vehicles Vehicle[]
+}
+
+model Employee {
+  id        String   @id @default(uuid())
+  name      String
+  email     String?  @db.VarChar(120)
+  cpf       String   @db.VarChar(15)
+  phone     String   @db.VarChar(20)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

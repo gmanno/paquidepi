@@ -80,6 +80,9 @@ app.get("/", (req, res) => {
 var users = require("./routes/users");
 app.use("/users", users);
 
+var users = require("./routes/clients");
+app.use("/clients", users);
+
 app.listen(process.env.PORT, () =>
   console.log(`
 🚀 Server ready at port ${process.env.PORT}

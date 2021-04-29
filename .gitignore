@@ -3,4 +3,5 @@
 .prettierrc
 yarn.lock
 /dist
+/rest
 docker*

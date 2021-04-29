@@ -14,7 +14,7 @@ const router = express.Router();
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await prisma.user.findMany({
+    const result = await prisma.client.findMany({
       select: {
         id: true,
         name: true,
@@ -29,12 +29,11 @@ router
     try {
       const { name, email, password } = req.body;
       const hash = password.length > 0 ? bcrypt.hashSync(password, salt) : null;
-      await prisma.user
+      await prisma.client
         .create({
           data: {
             name: name,
             email: email,
-            password: hash,
           },
         })
         .then((usr) => {
@@ -57,7 +56,7 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const user = await prisma.user.update({
+      const user = await prisma.client.update({
         where: { id: req.body.id },
         data: {
           name: req.body.name,
@@ -82,7 +81,7 @@ router
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
    const { id } = req.params;
 
-  await prisma.user
+  await prisma.client
     .delete({
       where: {
         id: id,
