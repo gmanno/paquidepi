@@ -29,7 +29,7 @@ model Client {
   id        String    @id @default(uuid())
   name      String
   email     String?   @db.VarChar(120)
-  cpf       String    @db.VarChar(15)
+  cpf       String    @unique @db.VarChar(15)
   phone     String    @db.VarChar(20)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

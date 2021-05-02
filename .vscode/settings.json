@@ -1,0 +1,16 @@
+"rest-client.environmentVariables": {
+  "$shared": {},
+  "local": {
+    "host": "localhost",
+    "port": "4000",
+    "secretKey": "devSecret"
+  },
+  "production": {
+    "host": "example.com",
+    "token": "{{$shared prodToken}}",
+    "secretKey": "prodSecret"
+  }
+},
+"rest-client.defaultHeaders": {
+  "User-Agent": "vscode-restclient"
+}

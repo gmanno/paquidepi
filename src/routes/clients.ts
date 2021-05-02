@@ -1,14 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import express from "express";
 import authenticateToken from "../util/authenticateToken";
-const bcrypt = require("bcryptjs");
 
-const saltRounds = 10;
-const salt = bcrypt.genSaltSync(saltRounds);
-
-const prisma = new PrismaClient({
-  log: ["query"],
-});
+const prisma = new PrismaClient();
 const router = express.Router();
 
 router
@@ -18,7 +12,8 @@ router
       select: {
         id: true,
         name: true,
-        email: true,
+        cpf: true,
+        phone: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -27,13 +22,14 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email, password } = req.body;
-      const hash = password.length > 0 ? bcrypt.hashSync(password, salt) : null;
+      const { name, email,  phone, cpf} = req.body;
       await prisma.client
         .create({
           data: {
             name: name,
+            cpf: cpf,
             email: email,
+            phone: phone
           },
         })
         .then((usr) => {
@@ -56,11 +52,13 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const user = await prisma.client.update({
+      const rec = await prisma.client.update({
         where: { id: req.body.id },
         data: {
           name: req.body.name,
           email: req.body.email,
+          cpf: req.body.cpf,
+          phone: req.body.phone,
         },
       });
 
