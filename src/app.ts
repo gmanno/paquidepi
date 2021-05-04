@@ -73,7 +73,7 @@ app.post(`/me`, authenticateToken, (req, res, next) => {
 
 app.get("/", (req, res) => {
   res.json({
-    message: "Paquinepi API",
+    message: "Paquidepi API",
   });
 });
 
@@ -82,6 +82,9 @@ app.use("/users", users);
 
 var users = require("./routes/clients");
 app.use("/clients", users);
+
+var categories = require("./routes/categories");
+app.use("/categories", categories);
 
 app.listen(process.env.PORT, () =>
   console.log(`
