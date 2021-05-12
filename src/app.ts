@@ -86,6 +86,9 @@ app.use("/clients", users);
 var categories = require("./routes/categories");
 app.use("/categories", categories);
 
+var vehicles = require("./routes/vehicles");
+app.use("/vehicles", vehicles);
+
 app.listen(process.env.PORT, () =>
   console.log(`
 🚀 Server ready at port ${process.env.PORT}

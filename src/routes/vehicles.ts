@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { count } from "console";
 import express from "express";
-import { userInfo } from "os";
 import authenticateToken from "../util/authenticateToken";
 
 const prisma = new PrismaClient({
@@ -12,42 +10,54 @@ const router = express.Router();
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await prisma.category.findMany();
+    const result = await prisma.vehicle.findMany({
+      select: {
+        id: true,
+        license: true,
+        owner: true,
+        category: true,
+      },
+    });
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
-    try {
-      const { name, email,  phone, cpf} = req.body;
-      await prisma.category
-        .create({
-          data: {
-            name: name
-          },
-        })
-        .then((rec) => {
-          res.status(201).json({
-            message: "Salvo com sucesso",
-            data: rec,
-            ok: true,
-          });
-        })
-        .catch((err) => {
-          res.json({
-            message: err.message,
-            error: err,
-            ok: false,
-          });
+    // try {
+    const { license, clientId, categoryId } = req.body;
+    await prisma.vehicle
+      .create({
+        data: {
+          license: license,
+          categoryId: categoryId,
+          clientId: clientId,
+        },
+      })
+      .then((rec) => {
+        res.status(201).json({
+          message: "Salvo com sucesso",
+          data: rec,
+          ok: true,
         });
-    } catch (err) {
-      res.json({ message: "Ocorreu um erro", error: err, ok: false });
-    }
+      })
+      .catch((err) => {
+        res.json({
+          message: err.message,
+          error: err,
+          ok: false,
+        });
+      });
+    // } catch (err) {
+    //   res.json({ message: "Ocorreu um erro", error: err, ok: false });
+    // }
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const rec = await prisma.category.update({
+      const { license, clientId, categoryId } = req.body;
+      const rec = await prisma.vehicle.update({
         where: { id: req.body.id },
         data: {
-          name: req.body.name
+          license: license,
+          categoryId: categoryId,
+          clientId: clientId,
         },
       });
 
@@ -66,9 +76,9 @@ router
   });
 
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
-   const { id } = req.params;
+  const { id } = req.params;
 
-  await prisma.category
+  await prisma.vehicle
     .delete({
       where: {
         id: id,
