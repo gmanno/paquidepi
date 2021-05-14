@@ -89,6 +89,9 @@ app.use("/categories", categories);
 var vehicles = require("./routes/vehicles");
 app.use("/vehicles", vehicles);
 
+var employees = require("./routes/employees");
+app.use("/employees", employees);
+
 app.listen(process.env.PORT, () =>
   console.log(`
 🚀 Server ready at port ${process.env.PORT}
