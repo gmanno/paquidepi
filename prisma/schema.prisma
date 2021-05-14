@@ -37,30 +37,54 @@ model Client {
 }
 
 model Vehicle {
-  id         String   @id @default(uuid())
-  license    String   @db.VarChar(20)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  owner      Client   @relation(fields: [clientId], references: [id])
+  id         String    @id @default(uuid())
+  license    String    @db.VarChar(20)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  owner      Client    @relation(fields: [clientId], references: [id])
   clientId   String
-  category   Category @relation(fields: [categoryId], references: [id])
+  category   Category  @relation(fields: [categoryId], references: [id])
   categoryId String
+  services   Service[]
 }
 
 model Category {
-  id       String    @id @default(uuid())
-  name     String    @db.VarChar(20)
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(20)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  vehicles Vehicle[]
+  vehicles  Vehicle[]
 }
 
 model Employee {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
-  email     String?  @db.VarChar(120)
-  cpf       String   @db.VarChar(15)
-  phone     String   @db.VarChar(20)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  email     String?   @db.VarChar(120)
+  cpf       String    @db.VarChar(15)
+  phone     String    @db.VarChar(20)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  services  Service[]
+}
+
+model ServiceCategory {
+  id        String    @id @default(uuid())
+  name      String    @db.VarChar(20)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  services  Service[]
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  dateService DateTime
+  rate        Int
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  vehicleId   String
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  employeeId  String
+  serviceCategory   ServiceCategory  @relation(fields: [serviceCategoryId], references: [id])
+  serviceCategoryId String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

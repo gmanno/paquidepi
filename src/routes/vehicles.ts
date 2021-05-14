@@ -7,10 +7,12 @@ const prisma = new PrismaClient({
 });
 const router = express.Router();
 
+const model = prisma.vehicle;
+
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await prisma.vehicle.findMany({
+    const result = await model.findMany({
       select: {
         id: true,
         license: true,
@@ -23,7 +25,7 @@ router
   .post(authenticateToken, async (req, res, next) => {
     // try {
     const { license, clientId, categoryId } = req.body;
-    await prisma.vehicle
+    await model
       .create({
         data: {
           license: license,
@@ -52,7 +54,7 @@ router
   .put(authenticateToken, async (req, res, next) => {
     try {
       const { license, clientId, categoryId } = req.body;
-      const rec = await prisma.vehicle.update({
+      const rec = await model.update({
         where: { id: req.body.id },
         data: {
           license: license,
@@ -75,10 +77,36 @@ router
     }
   });
 
+router.get(`/:id`, authenticateToken, async (req, res, next) => {
+  const { id } = req.params;
+  await model
+    .findFirst({
+      where: {
+        id: id,
+      },
+    })
+    .then((result) => {
+      res.json(
+        result === null
+          ? {
+              message: "Registro não encontrado",
+              ok: false,
+            }
+          : { result: result, ok: true }
+      );
+    })
+    .catch((err) => {
+      res.json({
+        message: "Registro não encontrado",
+        error: err.message,
+        ok: false,
+      });
+    });
+});
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
   const { id } = req.params;
 
-  await prisma.vehicle
+  await model
     .delete({
       where: {
         id: id,
@@ -92,7 +120,7 @@ router.delete(`/:id`, authenticateToken, async (req, res, next) => {
     })
     .catch((err) => {
       res.json({
-        message: "Record not found",
+        message: "Registro não encontrado",
         error: err.message,
         ok: false,
       });

@@ -86,11 +86,17 @@ app.use("/clients", users);
 var categories = require("./routes/categories");
 app.use("/categories", categories);
 
+var service_categories = require("./routes/service_categories");
+app.use("/service_categories", service_categories);
+
 var vehicles = require("./routes/vehicles");
 app.use("/vehicles", vehicles);
 
 var employees = require("./routes/employees");
 app.use("/employees", employees);
+
+var services = require("./routes/services");
+app.use("/services", services);
 
 app.listen(process.env.PORT, () =>
   console.log(`

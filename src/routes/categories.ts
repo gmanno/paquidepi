@@ -8,17 +8,18 @@ const prisma = new PrismaClient({
   log: ["query"],
 });
 const router = express.Router();
+const model = prisma.category;
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await prisma.category.findMany();
+    const result = await model.findMany();
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email,  phone, cpf} = req.body;
-      await prisma.category
+      const { name} = req.body;
+      await model
         .create({
           data: {
             name: name
@@ -44,7 +45,7 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const rec = await prisma.category.update({
+      const rec = await model.update({
         where: { id: req.body.id },
         data: {
           name: req.body.name
@@ -65,10 +66,36 @@ router
     }
   });
 
+router.get(`/:id`, authenticateToken, async (req, res, next) => {
+  const { id } = req.params;
+  await model
+    .findFirst({
+      where: {
+        id: id,
+      },
+    })
+    .then((result) => {
+      res.json(
+        result === null
+          ? {
+              message: "Registro não encontrado",
+              ok: false,
+            }
+          : { result: result, ok: true }
+      );
+    })
+    .catch((err) => {
+      res.json({
+        message: "Registro não encontrado",
+        error: err.message,
+        ok: false,
+      });
+    });
+});
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
    const { id } = req.params;
 
-  await prisma.category
+  await model
     .delete({
       where: {
         id: id,
@@ -82,7 +109,7 @@ router.delete(`/:id`, authenticateToken, async (req, res, next) => {
     })
     .catch((err) => {
       res.json({
-        message: "Record not found",
+        message: "Registro não encontrado",
         error: err.message,
         ok: false,
       });

@@ -2,41 +2,43 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import authenticateToken from "../util/authenticateToken";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["query"],
+});
 const router = express.Router();
-const model = prisma.client;
+
+const model= prisma.service
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
     const result = await model.findMany({
-      select: {
-        id: true,
-        name: true,
-        cpf: true,
-        phone: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        employee: true,
+        serviceCategory: true,
+        vehicle: true,
       },
     });
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email,  phone, cpf} = req.body;
-      await model
+      const { dateService, rate, vehicleId, employeeId, serviceCategoryId } =
+        req.body;
+      await prisma.service
         .create({
           data: {
-            name: name,
-            cpf: cpf,
-            email: email,
-            phone: phone
+            dateService: new Date(dateService),
+            rate: rate,
+            vehicleId: vehicleId,
+            employeeId: employeeId,
+            serviceCategoryId: serviceCategoryId,
           },
         })
-        .then((usr) => {
+        .then((rec) => {
           res.status(201).json({
             message: "Salvo com sucesso",
-            data: usr,
+            data: rec,
             ok: true,
           });
         })
@@ -48,18 +50,28 @@ router
           });
         });
     } catch (err) {
+      console.log(err);
       res.json({ message: "Ocorreu um erro", error: err, ok: false });
     }
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
+      const {
+        id,
+        dateService,
+        rate,
+        vehicleId,
+        employeeId,
+        serviceCategoryId,
+      } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
-          name: req.body.name,
-          email: req.body.email,
-          cpf: req.body.cpf,
-          phone: req.body.phone,
+          dateService: new Date(dateService),
+          rate: rate,
+          vehicleId: vehicleId,
+          employeeId: employeeId,
+          serviceCategoryId: serviceCategoryId,
         },
       });
 
@@ -77,7 +89,7 @@ router
     }
   });
 
-router.get(`/:id`, authenticateToken, async (req, res, next) => {
+  router.get(`/:id`, authenticateToken, async (req, res, next) => {
   const { id } = req.params;
   await model
     .findFirst({
@@ -103,10 +115,11 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
       });
     });
 });
-router.delete(`/:id`, authenticateToken, async (req, res, next) => {
-   const { id } = req.params;
 
-  await model
+router.delete(`/:id`, authenticateToken, async (req, res, next) => {
+  const { id } = req.params;
+
+  await prisma.service
     .delete({
       where: {
         id: id,

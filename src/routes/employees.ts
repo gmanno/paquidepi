@@ -4,17 +4,18 @@ import authenticateToken from "../util/authenticateToken";
 
 const prisma = new PrismaClient();
 const router = express.Router();
+const model = prisma.employee;
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await prisma.employee.findMany();
+    const result = await model.findMany();
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
       const { name, email, cpf, phone } = req.body;
-      await prisma.employee
+      await model
         .create({
           data: {
             name: name,
@@ -44,7 +45,7 @@ router
   .put(authenticateToken, async (req, res, next) => {
     try {
       const { id, name, email, cpf, phone } = req.body;
-      const rec = await prisma.employee.update({
+      const rec = await model.update({
         where: { id: req.body.id },
         data: {
           name: name,
@@ -68,10 +69,36 @@ router
     }
   });
 
+router.get(`/:id`, authenticateToken, async (req, res, next) => {
+  const { id } = req.params;
+  await model
+    .findFirst({
+      where: {
+        id: id,
+      },
+    })
+    .then((result) => {
+      res.json(
+        result === null
+          ? {
+              message: "Registro não encontrado",
+              ok: false,
+            }
+          : { result: result, ok: true }
+      );
+    })
+    .catch((err) => {
+      res.json({
+        message: "Registro não encontrado",
+        error: err.message,
+        ok: false,
+      });
+    });
+});
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
   const { id } = req.params;
 
-  await prisma.employee
+  await model
     .delete({
       where: {
         id: id,
@@ -85,7 +112,7 @@ router.delete(`/:id`, authenticateToken, async (req, res, next) => {
     })
     .catch((err) => {
       res.json({
-        message: "Record not found",
+        message: "Registro não encontrado",
         error: err.message,
         ok: false,
       });

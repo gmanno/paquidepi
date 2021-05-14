@@ -1,42 +1,34 @@
 import { PrismaClient } from "@prisma/client";
+import { count } from "console";
 import express from "express";
+import { userInfo } from "os";
 import authenticateToken from "../util/authenticateToken";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["query"],
+});
 const router = express.Router();
-const model = prisma.client;
+const model = prisma.serviceCategory;
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await model.findMany({
-      select: {
-        id: true,
-        name: true,
-        cpf: true,
-        phone: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+    const result = await model.findMany();
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email,  phone, cpf} = req.body;
+      const { name } = req.body;
       await model
         .create({
           data: {
             name: name,
-            cpf: cpf,
-            email: email,
-            phone: phone
           },
         })
-        .then((usr) => {
+        .then((rec) => {
           res.status(201).json({
             message: "Salvo com sucesso",
-            data: usr,
+            data: rec,
             ok: true,
           });
         })
@@ -57,9 +49,6 @@ router
         where: { id: req.body.id },
         data: {
           name: req.body.name,
-          email: req.body.email,
-          cpf: req.body.cpf,
-          phone: req.body.phone,
         },
       });
 
@@ -104,7 +93,7 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
     });
 });
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
-   const { id } = req.params;
+  const { id } = req.params;
 
   await model
     .delete({
