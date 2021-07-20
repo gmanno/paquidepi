@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { count } from "console";
 import express from "express";
-import { userInfo } from "os";
 import authenticateToken from "../util/authenticateToken";
 
 const prisma = new PrismaClient({
@@ -13,7 +11,13 @@ const model = prisma.serviceCategory;
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await model.findMany();
+    const result = await model.findMany({
+      include: {
+        _count: {
+          select: { services: true },
+        },
+      },
+    });
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
