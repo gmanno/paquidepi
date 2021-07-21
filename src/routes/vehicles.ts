@@ -63,12 +63,10 @@ router
         },
       });
 
-      res.json(
-        res.json({
-          message: "Atualizado com sucesso.",
-          ok: true,
-        })
-      );
+      res.json({
+        message: "Atualizado com sucesso.",
+        ok: true,
+      });
     } catch (error) {
       res.json({
         error: error.message,

@@ -7,7 +7,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["selectRelationCount"]
 }
 
@@ -65,27 +65,35 @@ model Employee {
   phone     String    @db.VarChar(20)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  services  Service[]
 }
 
 model ServiceCategory {
   id        String    @id @default(uuid())
-  name      String    @db.VarChar(20)
+  name      String    @db.VarChar(50)
+  duration  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  services  Service[]
+}
+
+model ServiceStatus {
+  id        Int       @id @default(autoincrement())
+  name      String    @db.VarChar(50)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   services  Service[]
 }
 
 model Service {
-  id          String   @id @default(uuid())
-  dateService DateTime
-  rate        Int
-  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
-  vehicleId   String
-  employee    Employee @relation(fields: [employeeId], references: [id])
-  employeeId  String
-  serviceCategory   ServiceCategory  @relation(fields: [serviceCategoryId], references: [id])
+  id                String          @id @default(uuid())
+  dateService       DateTime
+  rate              Int
+  vehicle           Vehicle         @relation(fields: [vehicleId], references: [id])
+  vehicleId         String
+  serviceCategory   ServiceCategory @relation(fields: [serviceCategoryId], references: [id])
   serviceCategoryId String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  serviceStatus     ServiceStatus   @relation(fields: [serviceStatusId], references: [id])
+  serviceStatusId   Int             @default(1)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
 }

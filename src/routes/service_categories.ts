@@ -22,11 +22,12 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name } = req.body;
+      const { name, duration } = req.body;
       await model
         .create({
           data: {
             name: name,
+            duration: parseInt(duration),
           },
         })
         .then((rec) => {
@@ -53,15 +54,13 @@ router
         where: { id: req.body.id },
         data: {
           name: req.body.name,
+          duration: parseInt(req.body.duration),
         },
       });
-
-      res.json(
-        res.json({
-          message: "Atualizado com sucesso.",
-          ok: true,
-        })
-      );
+      res.json({
+        message: "Atualizado com sucesso.",
+        ok: true,
+      });
     } catch (error) {
       res.json({
         error: error.message,

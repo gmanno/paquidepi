@@ -7,15 +7,15 @@ const prisma = new PrismaClient({
 });
 const router = express.Router();
 
-const model= prisma.service
+const model = prisma.service;
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
     const result = await model.findMany({
       include: {
-        employee: true,
         serviceCategory: true,
+        serviceStatus: true,
         vehicle: true,
       },
     });
@@ -23,15 +23,13 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { dateService, rate, vehicleId, employeeId, serviceCategoryId } =
-        req.body;
+      const { dateService, rate, vehicleId, serviceCategoryId } = req.body;
       await prisma.service
         .create({
           data: {
             dateService: new Date(dateService),
             rate: rate,
             vehicleId: vehicleId,
-            employeeId: employeeId,
             serviceCategoryId: serviceCategoryId,
           },
         })
@@ -56,31 +54,21 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const {
-        id,
-        dateService,
-        rate,
-        vehicleId,
-        employeeId,
-        serviceCategoryId,
-      } = req.body;
+      const { id, dateService, rate, vehicleId, serviceCategoryId } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
           dateService: new Date(dateService),
           rate: rate,
           vehicleId: vehicleId,
-          employeeId: employeeId,
           serviceCategoryId: serviceCategoryId,
         },
       });
 
-      res.json(
-        res.json({
-          message: "Atualizado com sucesso.",
-          ok: true,
-        })
-      );
+      res.json({
+        message: "Atualizado com sucesso.",
+        ok: true,
+      });
     } catch (error) {
       res.json({
         error: error.message,
@@ -89,7 +77,7 @@ router
     }
   });
 
-  router.get(`/:id`, authenticateToken, async (req, res, next) => {
+router.get(`/:id`, authenticateToken, async (req, res, next) => {
   const { id } = req.params;
   await model
     .findFirst({

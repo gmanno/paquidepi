@@ -23,14 +23,14 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email,  phone, cpf} = req.body;
+      const { name, email, phone, cpf } = req.body;
       await model
         .create({
           data: {
             name: name,
             cpf: cpf,
             email: email,
-            phone: phone
+            phone: phone,
           },
         })
         .then((usr) => {
@@ -63,12 +63,10 @@ router
         },
       });
 
-      res.json(
-        res.json({
-          message: "Atualizado com sucesso.",
-          ok: true,
-        })
-      );
+      res.json({
+        message: "Atualizado com sucesso.",
+        ok: true,
+      });
     } catch (error) {
       res.json({
         error: error.message,
@@ -104,7 +102,7 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
     });
 });
 router.delete(`/:id`, authenticateToken, async (req, res, next) => {
-   const { id } = req.params;
+  const { id } = req.params;
 
   await model
     .delete({
