@@ -26,7 +26,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
       process.env.SECRET,
       function (err: any, decoded: decodedUser) {
         if (err)
-          return res.status(500).json({
+          return res.status(401).json({
             auth: false,
             message: "Failed to authenticate token.",
             error: err,
@@ -38,7 +38,7 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
       }
     );
   } catch (err) {
-    return res.status(500).json({
+    return res.status(401).json({
       auth: false,
       message: "Failed to authenticate token.",
       error: "Failed to authenticate token.",

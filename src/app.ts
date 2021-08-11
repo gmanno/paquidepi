@@ -46,7 +46,7 @@ app.post(`/login`, async (req, res) => {
         .then((matched: boolean) => {
           if (matched) {
             const access_token = jwt.sign({ user: data }, process.env.SECRET, {
-              expiresIn: 6000, // expires in 5min
+              expiresIn: 10000, // expires in 5min
             });
             res.json({
               result: true,
