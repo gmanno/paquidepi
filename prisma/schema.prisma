@@ -1,5 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+// npx prisma migrate dev
 
 datasource db {
   provider = "postgresql"
@@ -27,73 +28,90 @@ enum Role {
 }
 
 model Client {
-  id        String    @id @default(uuid())
+  id        String       @id @default(uuid())
   name      String
-  email     String?   @db.VarChar(120)
-  cpf       String    @unique @db.VarChar(15)
-  phone     String    @db.VarChar(20)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  email     String?      @db.VarChar(120)
+  cpf       String       @unique @db.VarChar(15)
+  phone     String       @db.VarChar(20)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
   vehicles  Vehicle[]
+  schedules Scheduling[]
 }
 
 model Vehicle {
-  id         String    @id @default(uuid())
-  license    String    @db.VarChar(20)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  owner      Client    @relation(fields: [clientId], references: [id])
-  clientId   String
-  category   Category  @relation(fields: [categoryId], references: [id])
-  categoryId String
-  services   Service[]
+  id                String          @id @default(uuid())
+  license           String          @db.VarChar(20)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  owner             Client          @relation(fields: [clientId], references: [id])
+  clientId          String
+  vehicleCategory   VehicleCategory @relation(fields: [vehicleCategoryId], references: [id])
+  vehicleCategoryId String
+  schedules         Scheduling[]
 }
 
-model Category {
-  id        String    @id @default(uuid())
-  name      String    @db.VarChar(20)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  vehicles  Vehicle[]
-}
-
-model Employee {
-  id        String    @id @default(uuid())
-  name      String
-  email     String?   @db.VarChar(120)
-  cpf       String    @db.VarChar(15)
-  phone     String    @db.VarChar(20)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-
-model ServiceCategory {
-  id        String    @id @default(uuid())
-  name      String    @db.VarChar(50)
-  duration  Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  services  Service[]
-}
-
-model ServiceStatus {
-  id        Int       @id @default(autoincrement())
-  name      String    @db.VarChar(50)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  services  Service[]
+model VehicleCategory {
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(20)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  vehicles      Vehicle[]
+  ServicePrices ServicePrices[]
 }
 
 model Service {
-  id                String          @id @default(uuid())
-  dateService       DateTime
-  rate              Int
-  vehicle           Vehicle         @relation(fields: [vehicleId], references: [id])
-  vehicleId         String
-  serviceCategory   ServiceCategory @relation(fields: [serviceCategoryId], references: [id])
-  serviceCategoryId String
-  serviceStatus     ServiceStatus   @relation(fields: [serviceStatusId], references: [id])
-  serviceStatusId   Int             @default(1)
+  id            String          @id @default(uuid())
+  name          String          @db.VarChar(50)
+  duration      Int
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  schedules     Scheduling[]
+  ServicePrices ServicePrices[]
+}
+
+model ServicePrices {
+  id                Int             @id @default(autoincrement())
+  value             Float
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
+  service           Service         @relation(fields: [serviceId], references: [id])
+  serviceId         String
+  vehicleCategory   VehicleCategory @relation(fields: [vehicleCategoryId], references: [id])
+  vehicleCategoryId String
+  Scheduling        Scheduling[]
+}
+
+model SchedulingStatus {
+  id        Int          @id @default(autoincrement())
+  name      String       @db.VarChar(50)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  schedules Scheduling[]
+}
+
+model Scheduling {
+  id                 String           @id @default(uuid())
+  dateService        DateTime
+  rate               Int
+  vehicle            Vehicle          @relation(fields: [vehicleId], references: [id])
+  vehicleId          String
+  client             Client           @relation(fields: [clientId], references: [id])
+  clientId           String
+  service            Service          @relation(fields: [serviceId], references: [id])
+  serviceId          String
+  schedulingStatus   SchedulingStatus @relation(fields: [schedulingStatusId], references: [id])
+  schedulingStatusId Int              @default(1)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  ServicePrices      ServicePrices?   @relation(fields: [servicePricesId], references: [id])
+  servicePricesId    Int?
+}
+
+model SchedulesConfig {
+  id           String   @id @default(uuid())
+  available_am Int
+  available_pm Int
+  ativo        Int      @default(1)
+  createdAt    DateTime @default(now())
 }

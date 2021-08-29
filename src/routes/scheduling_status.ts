@@ -1,14 +1,12 @@
 import { PrismaClient } from "@prisma/client";
-import { count } from "console";
 import express from "express";
-import { userInfo } from "os";
 import authenticateToken from "../util/authenticateToken";
 
 const prisma = new PrismaClient({
   log: ["query"],
 });
 const router = express.Router();
-const model = prisma.category;
+const model = prisma.schedulingStatus;
 
 router
   .route("/")
@@ -68,10 +66,10 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
   await model
     .findFirst({
       where: {
-        id: id,
+        id: parseInt(id),
       },
     })
-    .then((result) => {
+    .then((result: any) => {
       res.json(
         result === null
           ? {
@@ -95,7 +93,7 @@ router.delete(`/:id`, authenticateToken, async (req, res, next) => {
   await model
     .delete({
       where: {
-        id: id,
+        id: parseInt(id),
       },
     })
     .then(() => {

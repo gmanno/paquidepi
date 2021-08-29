@@ -77,26 +77,17 @@ app.get("/", (req, res) => {
   });
 });
 
-var users = require("./routes/users");
-app.use("/users", users);
+app.use("/users", require("./routes/users"));
 
-var users = require("./routes/clients");
-app.use("/clients", users);
+app.use("/clients", require("./routes/clients"));
 
-var categories = require("./routes/categories");
-app.use("/categories", categories);
+app.use("/vehicles_categories", require("./routes/vehicles_categories"));
 
-var service_categories = require("./routes/service_categories");
-app.use("/service_categories", service_categories);
+app.use("/scheduling_status", require("./routes/scheduling_status"));
 
-var vehicles = require("./routes/vehicles");
-app.use("/vehicles", vehicles);
+app.use("/vehicles", require("./routes/vehicles"));
 
-var employees = require("./routes/employees");
-app.use("/employees", employees);
-
-var services = require("./routes/services");
-app.use("/services", services);
+app.use("/services", require("./routes/services"));
 
 app.listen(process.env.PORT || 4000, () =>
   console.log(`

@@ -41,8 +41,12 @@ router
           });
         })
         .catch((err) => {
+          let msg = "Ocorreu um erro";
+          if (err.code == "P2002") {
+            msg = `${err.meta.target} já cadastrado no sistema.`;
+          }
           res.json({
-            message: err.message,
+            message: msg,
             error: err,
             ok: false,
           });
@@ -67,9 +71,14 @@ router
         message: "Atualizado com sucesso.",
         ok: true,
       });
-    } catch (error) {
+    } catch (err) {
+      let msg = "Ocorreu um erro";
+      if (err.code == "P2002") {
+        msg = `${err.meta.target} já cadastrado no sistema.`;
+      }
       res.json({
-        error: error.message,
+        message: msg,
+        error: err,
         ok: false,
       });
     }

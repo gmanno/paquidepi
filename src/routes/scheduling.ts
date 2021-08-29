@@ -2,9 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import express from "express";
 import authenticateToken from "../util/authenticateToken";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  log: ["query"],
+});
 const router = express.Router();
-const model = prisma.employee;
+const model = prisma.scheduling;
 
 router
   .route("/")
@@ -14,20 +16,18 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, email, cpf, phone } = req.body;
+      const { name, duration } = req.body;
       await model
         .create({
           data: {
             name: name,
-            email: email,
-            cpf: cpf,
-            phone: phone,
+            duration: parseInt(duration),
           },
         })
-        .then((usr) => {
+        .then((rec) => {
           res.status(201).json({
             message: "Salvo com sucesso",
-            data: usr,
+            data: rec,
             ok: true,
           });
         })
@@ -44,17 +44,13 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const { id, name, email, cpf, phone } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
-          name: name,
-          email: email,
-          cpf: cpf,
-          phone: phone,
+          name: req.body.name,
+          duration: parseInt(req.body.duration),
         },
       });
-
       res.json({
         message: "Atualizado com sucesso.",
         ok: true,
@@ -75,7 +71,7 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
         id: id,
       },
     })
-    .then((result) => {
+    .then((result: any) => {
       res.json(
         result === null
           ? {

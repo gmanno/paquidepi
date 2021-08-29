@@ -6,28 +6,21 @@ const prisma = new PrismaClient({
   log: ["query"],
 });
 const router = express.Router();
-const model = prisma.serviceCategory;
+const model = prisma.vehicleCategory;
 
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await model.findMany({
-      include: {
-        _count: {
-          select: { services: true },
-        },
-      },
-    });
+    const result = await model.findMany();
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, duration } = req.body;
+      const { name } = req.body;
       await model
         .create({
           data: {
             name: name,
-            duration: parseInt(duration),
           },
         })
         .then((rec) => {
@@ -54,7 +47,6 @@ router
         where: { id: req.body.id },
         data: {
           name: req.body.name,
-          duration: parseInt(req.body.duration),
         },
       });
       res.json({
@@ -77,7 +69,7 @@ router.get(`/:id`, authenticateToken, async (req, res, next) => {
         id: id,
       },
     })
-    .then((result) => {
+    .then((result: any) => {
       res.json(
         result === null
           ? {

@@ -12,25 +12,17 @@ const model = prisma.service;
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
-    const result = await model.findMany({
-      include: {
-        serviceCategory: true,
-        serviceStatus: true,
-        vehicle: true,
-      },
-    });
+    const result = await model.findMany();
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { dateService, rate, vehicleId, serviceCategoryId } = req.body;
+      const { name, duration } = req.body;
       await prisma.service
         .create({
           data: {
-            dateService: new Date(dateService),
-            rate: rate,
-            vehicleId: vehicleId,
-            serviceCategoryId: serviceCategoryId,
+            name: name,
+            duration: duration,
           },
         })
         .then((rec) => {
@@ -54,14 +46,12 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const { id, dateService, rate, vehicleId, serviceCategoryId } = req.body;
+      const { id, name, duration, duration_pm } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
-          dateService: new Date(dateService),
-          rate: rate,
-          vehicleId: vehicleId,
-          serviceCategoryId: serviceCategoryId,
+          name: name,
+          duration: duration,
         },
       });
 

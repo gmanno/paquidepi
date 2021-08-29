@@ -17,19 +17,19 @@ router
         id: true,
         license: true,
         owner: true,
-        category: true,
+        vehicleCategory: true,
       },
     });
     res.json(result);
   })
   .post(authenticateToken, async (req, res, next) => {
     // try {
-    const { license, clientId, categoryId } = req.body;
+    const { license, clientId, vehicleCategoryId } = req.body;
     await model
       .create({
         data: {
           license: license,
-          categoryId: categoryId,
+          vehicleCategoryId: vehicleCategoryId,
           clientId: clientId,
         },
       })
@@ -53,12 +53,12 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const { license, clientId, categoryId } = req.body;
+      const { license, clientId, vehicleCategoryId } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
           license: license,
-          categoryId: categoryId,
+          vehicleCategoryId: vehicleCategoryId,
           clientId: clientId,
         },
       });
