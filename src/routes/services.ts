@@ -22,7 +22,7 @@ router
         .create({
           data: {
             name: name,
-            duration: duration,
+            duration: parseInt(duration),
           },
         })
         .then((rec) => {
@@ -51,7 +51,7 @@ router
         where: { id: req.body.id },
         data: {
           name: name,
-          duration: duration,
+          duration: parseInt(duration),
         },
       });
 
