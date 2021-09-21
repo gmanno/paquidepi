@@ -10,11 +10,14 @@ interface decodedUser {
   };
 }
 
+const getToken = (req: Request) => {
+  const auth = req.headers["authorization"];
+  return auth != null ? auth.split(" ").slice(-1).pop() : false;
+};
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   try {
-    const auth = req.headers["authorization"];
-    const token = auth!=null? auth.split(" ").slice(-1).pop() : false;
+    const token = getToken(req);
 
     if (!token)
       return res
@@ -32,7 +35,6 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
             error: err,
           });
 
-        // se tudo estiver ok, salva no request para uso posterior
         res.locals.current_user = decoded.user;
         next();
       }

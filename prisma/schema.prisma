@@ -53,7 +53,7 @@ model Vehicle {
 
 model VehicleCategory {
   id            String          @id @default(uuid())
-  name          String          @db.VarChar(20)
+  name          String          @db.VarChar(50)
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
   vehicles      Vehicle[]
