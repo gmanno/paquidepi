@@ -9,6 +9,14 @@ const router = express.Router();
 
 const model = prisma.service;
 
+interface servicePrices {
+  [index: number]: {
+    vehicleCategoryId: string;
+    value: number;
+    duration: number;
+  };
+}
+
 router
   .route("/")
   .get(authenticateToken, async (req, res, next) => {
@@ -18,10 +26,12 @@ router
   .post(authenticateToken, async (req, res, next) => {
     try {
       const { name } = req.body;
+      const { service_price } = req.body;
       await prisma.service
         .create({
           data: {
             name: name,
+            ServicePrices: { create: service_price },
           },
         })
         .then((rec) => {
@@ -32,6 +42,7 @@ router
           });
         })
         .catch((err) => {
+          console.log(err)
           res.json({
             message: err.message,
             error: err,
