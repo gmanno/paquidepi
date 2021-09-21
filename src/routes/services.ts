@@ -17,12 +17,11 @@ router
   })
   .post(authenticateToken, async (req, res, next) => {
     try {
-      const { name, duration } = req.body;
+      const { name } = req.body;
       await prisma.service
         .create({
           data: {
             name: name,
-            duration: parseInt(duration),
           },
         })
         .then((rec) => {
@@ -46,12 +45,11 @@ router
   })
   .put(authenticateToken, async (req, res, next) => {
     try {
-      const { id, name, duration, duration_pm } = req.body;
+      const { id, name } = req.body;
       const rec = await model.update({
         where: { id: req.body.id },
         data: {
           name: name,
-          duration: parseInt(duration),
         },
       });
 

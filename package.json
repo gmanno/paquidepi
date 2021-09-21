@@ -10,10 +10,10 @@
     "start": "nodemon src/app.ts"
   },
   "devDependencies": {
-    "prisma": "^2.27.0"
+    "prisma": "3"
   },
   "dependencies": {
-    "@prisma/client": "^2.27.0",
+    "@prisma/client": "3",
     "@types/express": "^4.17.11",
     "@types/node": "^14.14.41",
     "bcryptjs": "^2.4.3",
