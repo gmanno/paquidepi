@@ -92,6 +92,5 @@ app.use("/services", require("./routes/services"));
 app.listen(process.env.PORT || 4000, () =>
   console.log(`
 🚀 Server ready at port ${process.env.PORT}
- db env ${process.env.DATABASE_URL}
 ⭐️ Check repo at: https://github.com/gmanno/paquidepi`)
 );
